@@ -2,25 +2,32 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Provider/AuthProvider";
 import BookingRow from "./BookingRow";
 import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 
 const Bookings = () => {
     const {user}=useContext(AuthContext)
     const [bookings,setBookings]=useState([]);
-    const url =`http://localhost:5000/bookings?email=${user?.email}`;
+    const axiosSecure =useAxiosSecure()
+    // const url =`https://car-doctors-server-omega.vercel.app/bookings?email=${user?.email}`;
+    const url =`/bookings?email=${user?.email}`;
     useEffect(()=>{
-        // fetch(url)
+      
+        // fetch(url,{credentials:'include'})
         // .then(res=>res.json())
         // .then(data=>setBookings(data))
-        axios(url,{withCredentials:true})
-        .then(res=>{
-          setBookings(res.data)
-        })
+
+        // axios(url,{withCredentials:true})
+        // .then(res=>{
+        //   setBookings(res.data)
+        // })
+        axiosSecure.get(url)
+        .then(res=>setBookings(res.data))
     },[])
     const handleDelete =id =>{
         const proceed =confirm('Are you want to delete')
         if(proceed){
-            fetch(`http://localhost:5000/bookings/${id}`,{
+            fetch(`https://car-doctors-server-omega.vercel.app/bookings/${id}`,{
                 method:'DELETE',
                 headers:{
                     'content-type':'application/json'
@@ -39,7 +46,7 @@ const Bookings = () => {
         }
     }
     const handleBookingConfirm = id =>{
-        fetch(`http://localhost:5000/bookings/${id}`,{
+        fetch(`https://car-doctors-server-omega.vercel.app/bookings/${id}`,{
             method:'PATCH',
             headers:{
                 'content-type':'application/json'
